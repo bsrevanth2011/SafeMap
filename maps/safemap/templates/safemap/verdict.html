@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maps</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        #layout{
+            position:absolute;
+            top:10px;
+            margin-left:25%;
+            width:50%;
+            height: 750px;
+            z-index: 9999;
+        }
+        body{
+            {% load static %}
+            background-image: url(' {% static "images/map.jpg" %}');
+
+        }
+        .background-image{
+            position:relative;
+            top:10px;
+            margin-left:25%;
+            width:50%;
+            height: 800px;
+            z-index: 1;
+            {% load static %}
+            background-image: url(' {% static "images/map.jpg" %}');
+            -webkit-filter: blur(10px);
+            -moz-filter: blur(10px);
+            -o-filter: blur(10px);
+            -ms-filter: blur(10px);
+            filter: blur(10px);
+        }
+        #message{
+            position: absolute;
+            top: 250px;
+            margin-left: 25%;
+            width: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-image"></div>
+    <div id="layout">
+        <div id="heading">
+            <h1><center>SafeMaps</center></h1>
+        </div>
+        <div id="message">
+            <h1><center>{{ message }}</center></h1>
+        </div>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maps</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        #layout{
+            position:absolute;
+            top:10px;
+            margin-left:25%;
+            width:50%;
+            height: 750px;
+            z-index: 9999;
+        }
+        .form-horizontal{
+            position: relative;
+            top: 50px;
+        }
+        #map{
+            position:absolute;
+            top: 360px;
+            margin-left: 5%;
+            width:90%;
+            margin-bottom: 100px;
+            height:400px;
+        }
+        #floating-window{
+            position:absolute;
+            top: 370px;
+            margin-left: 25%;
+            width: 50%;
+        }
+        body{
+            {% load static %}
+            background-image: url(' {% static "images/map.jpg" %}');
+
+        }
+        .background-image{
+            position:relative;
+            top:10px;
+            margin-left:25%;
+            width:50%;
+            height: 800px;
+            z-index: 1;
+            {% load static %}
+            background-image: url(' {% static "images/map.jpg" %}');
+            -webkit-filter: blur(10px);
+            -moz-filter: blur(10px);
+            -o-filter: blur(10px);
+            -ms-filter: blur(10px);
+            filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+<div class="background-image"></div>
+<div id="layout">
+    <div class="heading">
+        <h1><center>SafeMaps</center></h1>
+    </div>
+    <form class="form-horizontal" action="{% url 'safemap:result' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="age">Age:</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="number" name="age" id="age">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="experience">Expertise:</label>
+            <div class="col-sm-8">
+                <select class="form-control" name="experience" id="experience">
+                    <option value="1">Beginner</option>
+                    <option value="2">Amateur</option>
+                    <option value="3">Good</option>
+                    <option value="4">Professional</option>
+                    <option value="5">Expert</option>
+                </select>
+            </div>
+        </div>
+        <div class="radio col-sm-offset-2">
+            <label><input type="radio" name="gender" value="Male">Male</label>
+        </div>
+        <div class="radio col-sm-offset-2">
+            <label><input type="radio" name="gender" value="Female">Female</label>
+        </div>
+        <br>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+                <input type="submit" class="form-control btn btn-primary" value="Submit">
+            </div>
+        </div>
+
+        <input type="hidden" value="0.0" name="latitude" id="Lat">
+        <input type="hidden" value="0.0" name="longitude" id="Long">
+
+    </form>
+    <div id="map" style="border: thin solid black"></div>
+    <div id="floating-window" class="form-inline">
+        <input type="text" class="form-control" id="address" value="Bengaluru, India">
+        <input type="button" class="form-control btn btn-primary" id="geocode" value="geocode">
+    </div>
+</div>
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 30.0, lng: 30.0},
+            zoom: 8
+        });
+        var geocoder = new google.maps.Geocoder();
+        document.getElementById('geocode').addEventListener('click', function() {
+          geocodeAddress(geocoder, map);
+        });
+    }
+
+    function geocodeAddress(geocoder, resultsMap) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+            document.getElementById('Lat').value = results[0].geometry.location.lat();
+            document.getElementById('Long').value = results[0].geometry.location.lng();
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1sO6MDC_3gXeL69GdBlfDBuIfBuGNeaI&callback=initMap"
+    async defer></script>
+</body>
+</html>
